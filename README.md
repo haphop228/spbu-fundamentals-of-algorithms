@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # spbu-fundamentals-of-algorithms
 Materials for the practicum for "Fundamentals of Algorithms" course at SpbU
 
@@ -75,7 +74,3 @@ Homework:
 Cubic spline: http://getsomemath.ru/subtopic/computational_mathematics/approximation_theory/local_interpolation
 
 LU: http://getsomemath.ru/subtopic/computational_mathematics/numerical_linear_algebra/gauss_methods
-=======
-# SPbU-Basics-of-algorithms
-Here's only first year second term, because I've lost my previous account
->>>>>>> cfb6406d62e388b165e24089c24e33435576e6b3
