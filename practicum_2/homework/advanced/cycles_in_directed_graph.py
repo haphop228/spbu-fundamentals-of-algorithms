@@ -23,9 +23,8 @@ def has_cycles(G: nx.DiGraph, node: Any, visited: dict[Any], ancestor=-1) -> Non
         visited[node] = True
         arr = neighbours_for_DiGraph(G, node)
         for i in arr:
-            if(i != ancestor): # we check if comliper want to go to the previous node
+            if(i != ancestor): # we check if comliper will go to the previous node
                 if(visited[i] == True): # if we made a circle and meet TRUE node
-                   # print(f"CYCLE! from {node} to {i}")
                     FLAG = True
                 else:
                     has_cycles(G, i, visited, node)
@@ -47,12 +46,7 @@ if __name__ == "__main__":
         else:
             i = c
         G = nx.read_edgelist(i, create_using=nx.DiGraph)
-        """
-        for i in (list(G.nodes)):
-            arr = neighbours_for_DiGraph(G, f"{i}")
-            print (arr)
-        """
-        #plot_graph(G)
+        plot_graph(G)
         visited = {n: False for n in G}
         print(f"Graph {filename}: " , end = '')
         has_cycles(G, node="0", visited=visited)
