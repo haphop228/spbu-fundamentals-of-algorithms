@@ -7,10 +7,8 @@ TEST_GRAPH_FILES = [
 ]
 
 
-def has_cycles(g: nx.DiGraph):
-    ##########################
-    ### PUT YOUR CODE HERE ###
-    ##########################
+def has_cycles(G: nx.DiGraph):
+    
 
     pass
 

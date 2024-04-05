@@ -5,7 +5,6 @@ import networkx as nx
 
 from src.plotting import plot_graph
 
-
 def visit(node: Any):
     print(f"Wow, it is {node} right here!")
 
@@ -67,8 +66,9 @@ if __name__ == "__main__":
     dfs_recursive(G, node="0", visited=visited)
     print()
 
+
     
-    arr = neighbours(G, node="5")
+    #arr = neighbours(G, node="5")
    # print(arr)
     # 2. Iterative DFS. Makes use of LIFO/stack data structure, does scale on large graphs
     print("Iterative DFS")
