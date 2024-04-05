@@ -20,7 +20,6 @@ def neighbours(G: nx.Graph, node: Any):
     return arr
 
 def dfs_recursive(G: nx.Graph, node: Any, visited: dict[Any]) -> None:
-    G_nodes = list(G.nodes)
     if (visited[node] == False):
         visited[node] = True
         visit(node)
@@ -28,14 +27,26 @@ def dfs_recursive(G: nx.Graph, node: Any, visited: dict[Any]) -> None:
         for i in arr:
             dfs_recursive(G, i, visited)
 
-
-
 def dfs_iterative(G: nx.Graph, node: Any) -> None:
-    ##########################
-    ### PUT YOUR CODE HERE ###
-    ##########################
-
-    pass
+    #visit(node)
+    stack = [node]
+    visited = {n: False for n in G}
+    cur_node = node
+    while (len(stack) != 0):
+        cur_node = stack[-1]
+        stack.pop(-1)
+        if (visited[cur_node] == False):
+            visit(cur_node)
+            visited[cur_node] = True
+            
+        arr_neighbours = neighbours(G, cur_node) 
+           
+        for i in range(len(arr_neighbours)):
+            
+            if (visited[arr_neighbours[i]] == False):
+                stack.append(arr_neighbours[i])
+            
+            
 
 
 def dfs_recursive_postorder(G: nx.DiGraph, node: Any, visited: dict[Any]) -> None:
