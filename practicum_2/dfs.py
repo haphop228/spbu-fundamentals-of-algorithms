@@ -46,16 +46,13 @@ def dfs_iterative(G: nx.Graph, node: Any) -> None:
             if (visited[arr_neighbours[i]] == False):
                 stack.append(arr_neighbours[i])
             
-            
-
-
 def dfs_recursive_postorder(G: nx.DiGraph, node: Any, visited: dict[Any]) -> None:
-    ##########################
-    ### PUT YOUR CODE HERE ###
-    ##########################
-
-    pass
-
+    if (visited[node] == False):
+        visited[node] = True
+        arr = neighbours(G, node)
+        for i in arr:
+            dfs_recursive_postorder(G, i, visited)
+        visit(node)
 
 if __name__ == "__main__":
     # Load and plot the graph
@@ -76,7 +73,7 @@ if __name__ == "__main__":
     # 2. Iterative DFS. Makes use of LIFO/stack data structure, does scale on large graphs
     print("Iterative DFS")
     print("-" * 32)
-    dfs_iterative(G, node="0")
+    #dfs_iterative(G, node="0")
     print()
 
     # 3. Postorder recursive DFS for topological sort
