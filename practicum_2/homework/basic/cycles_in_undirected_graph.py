@@ -1,3 +1,5 @@
+import os
+
 import networkx as nx
 from typing import Any
 from src.plotting import plot_graph
@@ -38,6 +40,7 @@ if __name__ == "__main__":
     b = "practicum_2/homework/basic/graph_2_w_cycles.edgelist"
     tmp = False
     for filename in TEST_GRAPH_FILES:
+<<<<<<< HEAD
         if (not tmp):
             i = a
             tmp = True
@@ -51,3 +54,11 @@ if __name__ == "__main__":
             print("there is a cycle!")
         else:
             print("no cycle here!")
+=======
+        # Load the graph
+        G = nx.read_edgelist(
+            os.path.join("practicum_2", "homework", filename), create_using=nx.Graph
+        )
+        # Output whether it has cycles
+        print(f"Graph {filename} has cycles: {has_cycles(G)}")
+>>>>>>> b567133b1f1679751f3681ee2b532c0f5acfa386
