@@ -2,6 +2,7 @@ import queue
 from typing import Any
 
 import networkx as nx
+import matplotlib.pyplot as plt
 
 from src.plotting import plot_graph
 
@@ -39,9 +40,7 @@ def dfs_iterative(G: nx.Graph, node: Any) -> None:
             visited[cur_node] = True
             
         arr_neighbours = neighbours(G, cur_node) 
-           
         for i in range(len(arr_neighbours)):
-            
             if (visited[arr_neighbours[i]] == False):
                 stack.append(arr_neighbours[i])
             
