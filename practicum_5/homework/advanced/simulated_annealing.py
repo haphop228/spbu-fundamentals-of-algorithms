@@ -27,58 +27,21 @@ def set_colors(G, colors):
     for n, color in zip(G.nodes, colors):
         G.nodes[n]["color"] = color
 
-def tweak(colors, n_max_colors, G):
-    new_colors = colors.copy()
-    #arr_random_index = []
-    for j in range(len(colors) // 20):
-        random_index = np.random.randint(low=0, high=len(colors))
-        #arr_random_index.append(random_index)
-        #new_colors[random_index] = np.random.randint(0, n_max_colors - 1)
-    new_colors[random_index] = np.random.randint(0, n_max_colors - 1)
-    #new_colors = np.random.randint(low=0, high=n_max_colors - 1, size=len(G.nodes))
-    return new_colors
-
-def temperature_changing(temperature, i) -> int:
-    lamda = 0.99
-    #* int((i // 5) + 1)
-    #iter = 500 - 2 * i
-    temperature = temperature * lamda
-    #temperature = temperature ** np.log(temperature) * lamda
-    #temperature = temperature * np.cos(temperature) 
-    #temperature = temperature ** np.log(temperature) * lamda
-    #np.exp(temperature) 
+def temperature_changing(temperature) -> int:
+    num = 0.898011
+    temperature = temperature * num
+# 0.9 
     return temperature
 
-def new_tweaks(colors, n_max_colors):
-    new_colors = colors.copy()
-    for j in range(len(colors) // 30):
-        random_index1 = np.random.randint(low=0, high=len(colors))
-        random_index2 = np.random.randint(low=0, high=len(colors))
-        #arr_random_index.append(random_index)
-        #new_colors[random_index1] = np.random.randint(0, n_max_colors - 1)
-        new_colors[random_index1] = new_colors[random_index2]
-    
-    #new_colors = np.random.randint(low=0, high=n_max_colors - 1, size=len(G.nodes))
-    return new_colors
 
-def new_new_tweaks(colors, n_max_colors):
+''' 
+## The idea of this func is that we check amount of neighbours and if  ##
+## it's big enough, than we color them into one colour different from  ##
+## the one that original node has                                      ##
+## Else we just colour our original node into different colour         ##
+'''
+def new_new_new_tweaks1(G: nx.Graph, colors, n_max_colors): 
     new_colors = colors.copy()
-    rand_color = np.random.randint(0, n_max_colors - 1)
-    random_index1 = np.random.randint(low=0, high=len(colors))
-    if (random_index1 + 1) in new_colors:
-        while (new_colors[random_index1] != new_colors[random_index1 + 1] and random_index1 < len(colors) - 1):
-            new_colors[random_index1] = rand_color
-            random_index1 +=1
-        
-    return new_colors
-
-def new_new_new_tweaks(G: nx.Graph, colors, n_max_colors):
-    new_colors = colors.copy()
-    #print(set(new_colors))
-    
-    # 13 mistakes one color, >= 8
-    probabiliy = 0.7
-    num = np.random.uniform(0, 1)
     rand_node = np.random.randint(low=0, high=len(G.nodes))
     color_of_node_we_check = colors[rand_node]
     rand_color = np.random.randint(0, n_max_colors)
@@ -94,40 +57,24 @@ def new_new_new_tweaks(G: nx.Graph, colors, n_max_colors):
             
     return new_colors
 
-def new_new_new_new_tweaks(G: nx.Graph, colors, n_max_colors):
+def new_new_new_tweaks(G: nx.Graph, colors, n_max_colors):
     new_colors = colors.copy()
-    # 13 mistakes one color, >= 8
-    probabiliy = 0.7
+    
     num = np.random.uniform(0, 1)
+    
     rand_node = np.random.randint(low=0, high=len(G.nodes))
     color_of_node_we_check = colors[rand_node]
-    rand_color = np.random.randint(0, n_max_colors - 1)
+    rand_color = np.random.randint(0, n_max_colors)
     
-    arr_of_neighbors_colors = np.zeros(n_max_colors - 1, dtype=np.int_)
-    for i in G.neighbors(rand_node):
-        arr_of_neighbors_colors[new_colors[i]]+=1
-    
-    color = min(arr_of_neighbors_colors)
-    for i in range(len(arr_of_neighbors_colors)):
-        if arr_of_neighbors_colors[i] == color:
-            index = i
-    for i in G.neighbors(rand_node):
-        new_colors[i] = arr_of_neighbors_colors[index]
+    while (color_of_node_we_check == rand_color):
+        rand_color = np.random.randint(0, n_max_colors)
+        
+    if len(list(G.neighbors(rand_node))) >= 8:
+        for i in G.neighbors(rand_node):
+            new_colors[i] = rand_color
+    else:
+        new_colors[rand_node] = rand_color
             
-    return new_colors
-
-def tweak(colors, n_max_colors):
-    new_colors = colors.copy()
-    random_index = np.random.randint(0, len(colors))
-    new_color = np.random.randint(0, n_max_colors - 1)
-    new_colors[random_index] = new_color
-    return new_colors
-
-def tweaks(colors, n_max_colors):
-    new_colors = colors.copy()
-    random_index = np.random.randint(0, len(colors))
-    new_colors[random_index] = np.random.randint(0, n_max_colors - 1)
-    
     return new_colors
 
 def solve_via_simulated_annealing_restarts(
@@ -171,8 +118,6 @@ def solve_via_simulated_annealing(
             loss_history[i] = number_of_conflicts(G, cur_colors)
             arr_of_loss_history.append(loss_history[i])
             next_colors = new_new_new_tweaks(G, cur_colors, n_max_colors)
-            #next_colors = new_new_new_new_tweaks(G, cur_colors, n_max_colors)
-            #next_colors = tweak(cur_colors, n_max_colors)
 
             cur_confl = number_of_conflicts(G, cur_colors)
             new_confl = number_of_conflicts(G, next_colors)
@@ -187,11 +132,10 @@ def solve_via_simulated_annealing(
                 cur_colors = next_colors
             elif delta_energy > 0:
                 cur_colors = next_colors
-            temperature = temperature_changing(temperature=temperature, i=i)
+            temperature = temperature_changing(temperature=temperature)
             temperature_history[counter] = temperature
             counter+=1
         
-    #print(min(arr_of_loss_history))
     average_mistakes.append(min(arr_of_loss_history))
     #plot_loss_history(probability_history)
     #plot_loss_history(temperature_history) 
@@ -206,13 +150,13 @@ if __name__ == "__main__":
     n_max_iters = 500
     n_max_colors = 3
     initial_colors = np.random.randint(low=0, high=n_max_colors - 1, size=len(G.nodes))
-
-    """
+    '''
     loss_history = solve_via_simulated_annealing(
         G, n_max_colors, initial_colors, n_max_iters
     )
-    """
-    n_restarts = 10
+    '''
+
+    n_restarts = 20
     loss_history = solve_via_simulated_annealing_restarts(
         solve_via_simulated_annealing,
         G,
@@ -221,7 +165,17 @@ if __name__ == "__main__":
         n_max_iters,
         n_restarts,
     )
+    
+    print()
+    print(f"Were made {n_restarts} restarts")
+    print("Average amount of mistakes:", sum(average_mistakes) / n_restarts)
+    print("Minimum mistakes:", min(average_mistakes))
     #plot_loss_history(loss_history)
-    print(sum(average_mistakes) / n_restarts)
-    print(average_mistakes[0])
-    #plot_loss_history(loss_history)
+   
+    '''
+    print("Would you like to print a graph? y/n")
+    
+    answer = input()
+    if (answer == "yes")  or answer ==  "y" or answer ==  "Y":
+        plot_loss_history(loss_history)
+    '''
