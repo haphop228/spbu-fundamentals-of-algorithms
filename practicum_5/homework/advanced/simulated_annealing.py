@@ -150,12 +150,12 @@ if __name__ == "__main__":
     n_max_iters = 500
     n_max_colors = 3
     initial_colors = np.random.randint(low=0, high=n_max_colors - 1, size=len(G.nodes))
-    '''
+    
     loss_history = solve_via_simulated_annealing(
         G, n_max_colors, initial_colors, n_max_iters
     )
+    
     '''
-
     n_restarts = 20
     loss_history = solve_via_simulated_annealing_restarts(
         solve_via_simulated_annealing,
@@ -166,11 +166,13 @@ if __name__ == "__main__":
         n_restarts,
     )
     
+
     print()
     print(f"Were made {n_restarts} restarts")
     print("Average amount of mistakes:", sum(average_mistakes) / n_restarts)
     print("Minimum mistakes:", min(average_mistakes))
-    #plot_loss_history(loss_history)
+    '''
+    plot_loss_history(loss_history)
    
     '''
     print("Would you like to print a graph? y/n")
