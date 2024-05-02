@@ -78,20 +78,24 @@ class QuadraticEquationRoots(Evaluator):
         super().__init__(coeffs, dtype, evaluation_method)
 
     def _eval_standard(self):
-
-        ##########################
-        ### PUT YOUR CODE HERE ###
-        ##########################
-
-        pass
+        a = self.coeffs[2]
+        b = self.coeffs[1]
+        c = self.coeffs[0]
+        
+        root_of_d = np.sqrt(np.power(b, 2, dtype=self.dtype) - self.dtype(4.0) * a * c, dtype=self.dtype)
+        x1 = (-b + root_of_d) / (self.dtype(2.0) * a)
+        x2 = (-b - root_of_d) / (self.dtype(2.0) * a)
+        return x1, x2
 
     def _eval_optimal(self):
-
-        ##########################
-        ### PUT YOUR CODE HERE ###
-        ##########################
-
-        pass
+        a = self.coeffs[2]
+        b = self.coeffs[1]
+        c = self.coeffs[0]
+        
+        root_of_d = np.sqrt(np.power(b, 2, dtype=self.dtype) - self.dtype(4.0) * a * c, dtype=self.dtype)
+        x1 = -(self.dtype(2.0) * c) / (b + root_of_d)
+        x2 = -(self.dtype(2.0) * c) / (b - root_of_d)
+        return x1, x2
 
 
 def _get_value(f, x):

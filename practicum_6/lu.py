@@ -3,13 +3,19 @@ from numpy.typing import NDArray
 
 
 def lu(A: NDArray, permute: bool) -> tuple[NDArray, NDArray, NDArray]:
-
-    ##########################
-    ### PUT YOUR CODE HERE ###
-    ##########################
-
-    pass
-
+    n = len(A)
+    U = np.copy(A)
+    L = np.eye(n)
+    P = np.eye(n)
+    
+    for k in range(n - 1):
+        U_0 = np.eye(n)
+        for i in range(k + 1, n):
+            m = U[i, k] / U[k, k]
+            U_0[i, k] = -m
+            L[i, k] = m
+        U = U_0 @ U
+    return L, U, P
 
 def solve(L: NDArray, U: NDArray, P: NDArray, b: NDArray) -> NDArray:
 
