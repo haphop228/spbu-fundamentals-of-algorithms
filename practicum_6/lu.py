@@ -7,7 +7,6 @@ def lu(A: NDArray, permute: bool) -> tuple[NDArray, NDArray, NDArray]:
     U = np.copy(A)
     L = np.eye(n)
     P = np.eye(n)
-    
     for k in range(n - 1):
         U_0 = np.eye(n)
         for i in range(k + 1, n):
