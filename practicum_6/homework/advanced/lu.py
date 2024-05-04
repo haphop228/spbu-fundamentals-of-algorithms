@@ -44,8 +44,6 @@ def lu(A: NDArray, permute: bool) -> tuple[NDArray, NDArray, NDArray]:
                 U[i] -= (U[k] * m)
         return L, U, P
        
-
-
 def solve(L: NDArray, U: NDArray, P: NDArray, b: NDArray) -> NDArray:
     n = len(b)
     y = np.zeros(n)
@@ -61,7 +59,6 @@ def solve(L: NDArray, U: NDArray, P: NDArray, b: NDArray) -> NDArray:
         x[i] = (y[i] - np.dot(U[i, i+1:], x[i+1:])) / U[i, i]
         
     return x
-
 
 def run_test_cases(n_runs: int, path_to_homework: str) -> dict[str, Performance]:
     matrix_filenames = []
@@ -90,9 +87,8 @@ def run_test_cases(n_runs: int, path_to_homework: str) -> dict[str, Performance]
                 )
     return performance_by_matrix
 
-
 if __name__ == "__main__":
-    n_runs = 1
+    n_runs = 10
     path_to_homework = os.path.join("practicum_6", "homework", "advanced")
     performance_by_matrix = run_test_cases(
         n_runs=n_runs, path_to_homework=path_to_homework
