@@ -19,29 +19,48 @@ class Performance:
 
 
 def lu(A: NDArray, permute: bool) -> tuple[NDArray, NDArray, NDArray]:
-    if permute == True:
+    n = A.shape[0]
+    L = np.eye(n)
+    U = np.copy(A)
+    P = np.eye(n)
+
+    for column in range(n-1):
         n = len(A)
         U = np.copy(A)
         L = np.eye(n)
         P = np.eye(n)
         for k in range(n - 1):
-            max_el = np.argmax(abs(U[k:, k])) + k #Find abs max element, it will be a pivot
-            if max_el != k: #If it's not on main diagonal, then swap lines
-                P[[k, max_el]] = P[[max_el, k]]
-                U[[k, max_el]] = U[[max_el, k]]
-
-            U_0 = np.eye(n)
+            if permute == True:
+                max_el = np.argmax(abs(U[k:, k])) + k #Find abs max element, it will be a pivot
+                if max_el != k: #If it's not on main diagonal, then swap lines
+                    P[[k, max_el]] = P[[max_el, k]]
+                    U[[k, max_el]] = U[[max_el, k]]
+                    if k != 0:
+                        L[[k, max_el], :k] = L[[max_el, k], :k]
+            
             for i in range(k + 1, n):
                 m = U[i, k] / U[k, k]
-                U_0[i, k] = -m
                 L[i, k] = m
-            U = U_0 @ U
+                U[i] -= (U[k] * m)
         return L, U, P
+       
 
 
 def solve(L: NDArray, U: NDArray, P: NDArray, b: NDArray) -> NDArray:
+    n = len(b)
+    y = np.zeros(n)
+    x = np.zeros(n)
+
+    rearranged_b = P.dot(b) # Swaped columns in b, using P
     
-    pass
+    # Firstly, solve Ly = Pb, where y = Ux    
+    for i in range(n):
+        y[i] = rearranged_b[i] - np.dot(L[i, :i], y[:i])
+    # Secondly, solve y = Ux and find x
+    for i in range(n-1, -1, -1):
+        x[i] = (y[i] - np.dot(U[i, i+1:], x[i+1:])) / U[i, i]
+        
+    return x
 
 
 def run_test_cases(n_runs: int, path_to_homework: str) -> dict[str, Performance]:
@@ -73,43 +92,7 @@ def run_test_cases(n_runs: int, path_to_homework: str) -> dict[str, Performance]
 
 
 if __name__ == "__main__":
-    
-    A = np.array([[2, -1, 1], [3, 3, 9], [3, 3, 5]])
-    L, U, P = lu(A, permute=True)
-    '''
-    print("L:", L)
-    print()
-    print("U:", U)
-    print()
-    print("L @ U:", L @ U)
-    print()
-    print("P:",P)
-    '''
-    print (P @ A)
-    print()
-    print(L @ U)    
-    '''
-    path_to_homework = os.path.join("practicum_6", "homework", "advanced")
-    matrix_filenames = []
-    performance_by_matrix = defaultdict(Performance)
-    with open(os.path.join(path_to_homework, "matrices.yaml"), "r") as f:
-        matrix_filenames = yaml.safe_load(f)
-    for i, matrix_filename in enumerate(matrix_filenames):
-        print(f"Processing matrix {i+1} out of {len(matrix_filenames)}")
-        A = (
-            scipy.io.mmread(os.path.join(path_to_homework, "matrices", matrix_filename))
-            .todense()
-            .A
-        )
-        b = np.ones((A.shape[0],))
-        perf = performance_by_matrix[matrix_filename]
-        t1 = time.time()
-        L, U, P = lu(A, permute=True)
-        print(L, U, P)
-    '''
-
-    ''' 
-    n_runs = 10
+    n_runs = 1
     path_to_homework = os.path.join("practicum_6", "homework", "advanced")
     performance_by_matrix = run_test_cases(
         n_runs=n_runs, path_to_homework=path_to_homework
@@ -122,5 +105,4 @@ if __name__ == "__main__":
             f"Average time: {perf.time / n_runs:.2e} seconds. "
             f"Relative error: {perf.relative_error:.2e}"
         )
-        '''
         
