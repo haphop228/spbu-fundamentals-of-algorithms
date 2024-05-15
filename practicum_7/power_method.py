@@ -5,11 +5,10 @@ from src.common import NDArrayFloat
 
 
 def power_method(A: NDArrayFloat, n_iters: int) -> tuple[NDArrayFloat, NDArrayFloat]:
-    dominant_eigenvalue_history = np.zeros((n_iters))
+    dominant_eigenvalue_history = np.zeros((n_iters,))
     dominant_eigenvector_history = np.zeros((n_iters, A.shape[0]))
     u_k = np.random.random(A.shape[0])
     u_kk = np.zeros_like(u_k)
-    
     for k in range(n_iters):
         pre_u_kk = A @ u_k
         A_u_k_norm = np.linalg.norm(pre_u_kk)
@@ -19,8 +18,6 @@ def power_method(A: NDArrayFloat, n_iters: int) -> tuple[NDArrayFloat, NDArrayFl
         dominant_eigenvalue_history[k] = dominant_eigenvalue
         dominant_eigenvector_history[k] = u_kk
     return dominant_eigenvalue_history, dominant_eigenvector_history
-        
-
 
 
 if __name__ == "__main__":
@@ -49,3 +46,4 @@ if __name__ == "__main__":
     ax.set_xlabel("Iteration", fontsize=12)
     ax.set_ylabel(r"$|\hat{\lambda} - \lambda|$", fontsize=12)
     plt.show()
+    print()

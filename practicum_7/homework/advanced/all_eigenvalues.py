@@ -41,9 +41,9 @@ def run_test_cases(
         perf = performance_by_matrix[matrix_filename]
         t1 = time.time()
         eigvals = get_all_eigenvalues(A)
-        eigvals_exact = get_numpy_eigenvalues(A)
         t2 = time.time()
         perf.time += t2 - t1
+        eigvals_exact = get_numpy_eigenvalues(A)
         eigvals_exact.sort()
         eigvals.sort()
         perf.relative_error = np.median(
