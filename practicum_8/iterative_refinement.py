@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from src.common import NDArrayFloat
 from src.linalg import get_scipy_solution
 from practicum_8.conjugate_gradient_method import (
-    conjugate_gradient_descent,
+    conjugate_gradient_method,
     relative_error,
 )
 
@@ -17,11 +17,19 @@ def iterative_refinement(
     A: NDArrayFloat, b: NDArrayFloat, solver, n_iters: int, n_ir_iters: int
 ) -> NDArrayFloat:
 
-    ##########################
-    ### PUT YOUR CODE HERE ###
-    ##########################
-
-    pass
+    print(f"IR #1 out of {n_ir_iters}")
+    
+    solution_hisotry = conjugate_gradient_method(A,b,n_iters,dtype=dtype)
+    x_approx = solution_hisotry[-1, :]
+    ir_solution_history[0] = x_approx
+    
+    for i in range(n_ir_iters):
+        print(f"IR #{i+1} out of {n_ir_iters}")
+        solution_hisotry = conjugate_gradient_method(A, b - A @ x_approx , n_iters,dtype=dtype)
+        y_approx = solution_hisotry[-1, :]
+        x_approx = x_approx + y_approx
+        ir_solution_history[i] = x_approx
+    return ir_solution_history
 
 
 def add_convergence_graph_to_axis(
@@ -60,7 +68,7 @@ if __name__ == "__main__":
 
     # Convergence speed for the conjugate gradient method
     ir_solution_history = iterative_refinement(
-        A, b, solver=conjugate_gradient_descent, n_iters=n_iters, n_ir_iters=n_ir_iters
+        A, b, solver=conjugate_gradient_method, n_iters=n_iters, n_ir_iters=n_ir_iters
     )
 
     fig, ax = plt.subplots(1, 1, figsize=(10, 5))
