@@ -4,31 +4,49 @@ import matplotlib.pyplot as plt
 from src.common import NDArrayFloat
 
 
-def qr(A: NDArrayFloat) -> tuple[NDArrayFloat, NDArrayFloat]:
-
-    ##########################
-    ### PUT YOUR CODE HERE ###
-    ##########################
-
-    pass
+def qr(A: NDArrayFloat) -> tuple[NDArrayFloat, NDArrayFloat]: # на выходе Q и R
+    n = A.shape[0]
+    Q = np.zeros_like(A)
+    R = np.zeros_like(A)
+    W = A.copy()
+    
+    for j in range(n):
+        w_j_norm = np.linalg.norm(W[: , j])
+        Q[: , j ] = W[: , j] / w_j_norm # W[: , j] == w_j^j
+        for i in range(j):
+            R[i,j] = A[: , j] @ Q[:, i]
+        a_j_norm = np.linalg.norm(A[:, j])
+        R[j,j] = np.sqrt(a_j_norm**2 - np.sum(R[ :j , j] ** 2))
+        for k in range(j+1,n):
+            prod = W[: , k] @ Q[: , j]
+            W[:, k ] = W[: , k] - prod * Q[:, j]
+    return Q,R
 
 
 def get_eigenvalues_via_qr(A: NDArrayFloat, n_iters: int) -> NDArrayFloat:
-
-    ##########################
-    ### PUT YOUR CODE HERE ###
-    ##########################
-
-    pass
-
+    A_k = A.copy()
+    for _ in range(n_iters):
+        Q, R = qr(A_k)
+        A_k = R @ Q
+    return np.diag(A_k)
+    
 
 def householder_tridiagonalization(A: NDArrayFloat) -> NDArrayFloat:
+    n = A.shape[0]
+    A_k = A.copy()
+    for k in range(n - 2):
+        x = np.zeros(n)
+        x[k + 1:] = A_k[k + 1:, k]
 
-    ##########################
-    ### PUT YOUR CODE HERE ###
-    ##########################
-
-    pass
+        y = np.zeros_like(x)
+        r = np.linalg.norm(x)
+        y[k + 1] = -sign(x[k+1]) * r
+        
+        u = (x - y) / np.linalg.norm(x - y)
+        H = np.eye(n) - 2 * np.outer(u, u)
+        A_k = H @ A_k @ H
+    
+    return A_k
 
 
 def sign(x):
@@ -45,7 +63,9 @@ if __name__ == "__main__":
         ]
     )
 
-    eigvals = get_eigenvalues_via_qr(A, n_iters=20)
 
+    eigvals = get_eigenvalues_via_qr(A, n_iters=20)
+    
     A_tri = householder_tridiagonalization(A)
-    eigvals_tri = get_eigenvalues_via_qr(A_tri, n_iters=20)
+    print(A_tri)
+    #eigvals_tri = get_eigenvalues_via_qr(A_tri, n_iters=20)
