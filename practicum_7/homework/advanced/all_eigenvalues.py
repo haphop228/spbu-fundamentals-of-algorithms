@@ -19,8 +19,8 @@ class Performance:
 
 def qr(A: np.array):
     n = A.shape[0]
-    Q = A.copy()
-    R = np.zeros((n, n))
+    Q = A.copy() # Ortogonal matrice
+    R = np.zeros((n, n)) # Upper triangle matrice
 
     for k in range(n): 
         R[k, k] = np.linalg.norm(Q[:, k])

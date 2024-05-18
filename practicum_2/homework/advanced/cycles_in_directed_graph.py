@@ -19,8 +19,8 @@ def neighbours_for_DiGraph(G: nx.DiGraph, node: Any):
             arr.append(i[1])
     return arr
 
-def has_cycles(G: nx.DiGraph, node: Any, visited: dict[Any], ancestor=-1) -> None:
-    global FLAG
+def check_cycles_inversion(G: nx.DiGraph, node: Any, visited: dict[Any], ancestor=-1) -> None:
+    global FLAG #Flag indicates if a cycle is found
     if (visited[node] == False and FLAG == False):
         visited[node] = True
         arr = neighbours_for_DiGraph(G, node)
@@ -29,8 +29,14 @@ def has_cycles(G: nx.DiGraph, node: Any, visited: dict[Any], ancestor=-1) -> Non
                 if(visited[i] == True): # if we made a circle and meet TRUE node
                     FLAG = True
                 else:
-                    has_cycles(G, i, visited, node)
+                    check_cycles_inversion(G, i, visited, node)
                     visited[i] = False
+
+
+def has_cycles(G: nx.DiGraph) -> None:
+    visited = {n: False for n in G}
+    
+    check_cycles_inversion(G, node="0", visited=visited)
 
 
 if __name__ == "__main__":
@@ -51,7 +57,7 @@ if __name__ == "__main__":
         plot_graph(G)
         visited = {n: False for n in G}
         print(f"Graph {filename}: " , end = '')
-        has_cycles(G, node="0", visited=visited)
+        has_cycles(G)
         if (FLAG == True):
             print("there is a cycle!")
         else:
