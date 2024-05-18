@@ -24,14 +24,12 @@ def qr(A: NDArrayFloat) -> tuple[NDArrayFloat, NDArrayFloat]:
 
     return Q, R
 
-
 def get_eigenvalues_via_qr(A: NDArrayFloat, n_iters: int) -> NDArrayFloat:
     A_k = A
     for _ in range(n_iters):
         Q, R = qr(A_k)
         A_k = R @ Q
     return np.diag(A_k)
-
 
 def householder_tridiagonalization(A: NDArrayFloat) -> NDArrayFloat:
     n = A.shape[0]
@@ -45,7 +43,6 @@ def householder_tridiagonalization(A: NDArrayFloat) -> NDArrayFloat:
         H_k = np.eye(n) - 2 * np.outer(u_k, u_k)
         A_k = H_k @ A_k @ H_k
     return A_k
-
 
 def sign(x):
     return 1 if x > 0 else -1

@@ -4,7 +4,6 @@ import os
 import yaml
 import time
 
-
 import numpy as np
 import scipy.io
 import scipy.linalg
@@ -18,15 +17,29 @@ class Performance:
     time: float = 0.0
     relative_error: float = 0.0
 
+def qr(A: np.array):
+    n = A.shape[0]
+    Q = A.copy()
+    R = np.zeros((n, n))
+
+    for k in range(n): 
+        R[k, k] = np.linalg.norm(Q[:, k])
+        Q[:, k] /= R[k, k] 
+        for j in range(k + 1, n):  
+            R[k, j] = np.dot(Q[:, k], Q[:, j])
+            Q[:, j] -= R[k, j] * Q[:, k] 
+    return Q, R
+
 
 def get_all_eigenvalues(A: NDArrayFloat) -> NDArrayFloat:
-
-    ##########################
-    ### PUT YOUR CODE HERE ###
-    ##########################
-
-    pass
-
+    A_k = A.copy()
+    for k in range(100):
+        Q, R = qr(A_k)
+        A_k = R @ Q
+        
+    A_k = np.diag(A_k)
+    eigvals = np.array(A_k)
+    return eigvals
 
 def run_test_cases(
     path_to_homework: str, path_to_matrices: str
@@ -41,13 +54,14 @@ def run_test_cases(
         perf = performance_by_matrix[matrix_filename]
         t1 = time.time()
         eigvals = get_all_eigenvalues(A)
+        eigvals_exact = get_numpy_eigenvalues(A)
         t2 = time.time()
         perf.time += t2 - t1
-        eigvals_exact = get_numpy_eigenvalues(A)
         eigvals_exact.sort()
-        eigvals.sort()
+        eigvals_sort = eigvals.copy()
+        eigvals_sort.sort()
         perf.relative_error = np.median(
-            np.abs(eigvals_exact - eigvals) / np.abs(eigvals_exact)
+            np.abs(eigvals_exact - eigvals_sort) / np.abs(eigvals_exact)
         )
     return performance_by_matrix
 
@@ -59,7 +73,6 @@ if __name__ == "__main__":
         path_to_homework=path_to_homework,
         path_to_matrices=path_to_matrices,
     )
-
     print("\nResult summary:")
     for filename, perf in performance_by_matrix.items():
         print(
@@ -67,3 +80,4 @@ if __name__ == "__main__":
             f"Average time: {perf.time:.2e} seconds. "
             f"Relative error: {perf.relative_error:.2e}"
         )
+
