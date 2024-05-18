@@ -77,7 +77,7 @@ if __name__ == "__main__":
     for filename, perf in performance_by_matrix.items():
         print(
             f"Matrix: {filename}. "
-            f"Average time: {perf.time:.2e} seconds. "
+            f"Average time: {perf.time:.2e} seconds.  "
             f"Relative error: {perf.relative_error:.2e}"
         )
 
