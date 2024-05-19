@@ -35,8 +35,12 @@ def check_cycles_inversion(G: nx.DiGraph, node: Any, visited: dict[Any], ancesto
 
 def has_cycles(G: nx.DiGraph) -> None:
     visited = {n: False for n in G}
-    
+    global FLAG
     check_cycles_inversion(G, node="0", visited=visited)
+    if (FLAG == True):
+        return True
+    else:
+        return False
 
 
 if __name__ == "__main__":
